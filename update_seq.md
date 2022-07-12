@@ -22,9 +22,9 @@ note over FWD: token.getStatus() == Done
 FWD -->>+ APP: returns FirmwareUpdateStatus.InProgress
 
 note right of FWD: note: non-blocking call
-FWD ->> WOK: token = new thread(UpdateCmd, fw_file)
+FWD ->> WOK: token = new thread(FwUpdateCmd, fw_file)
 note over WOK: thread spawned
-WOK ->>+ DEV: UpdateCmd(fw_file)
+WOK ->>+ DEV: FwUpdateCmd(fw_file)
 APP ->>- FWD: GetFirmwareUpdateStatus
 note over FWD: token.getStatus() == Not Done
 FWD -->>+ APP: returns FirmwareUpdateStatus.InProgress
