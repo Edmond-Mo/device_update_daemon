@@ -8,8 +8,8 @@ participant DEV as Device
 APP ->> FWD: UpdateFirmware(fw_file, sig_file)
 FWD -->> APP: returns
 note right of FWD: note: non-blocking call
-FWD ->> WOK: token = new thread(VerifyCmd, fw_file, sig_file)
-note over WOK: thread spawned to run VerifyCmd
+FWD ->> WOK: token = new thread(FwVerifyCmd, fw_file, sig_file)
+note over WOK: thread spawned to run FwVerifyCmd
 note over WOK: thread running...
 APP ->> FWD: GetFirmwareUpdateStatus
 note over FWD: token.getStatus() == Not Done
