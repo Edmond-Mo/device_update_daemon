@@ -45,11 +45,11 @@ line utilities for firmware updates using a new daemon:
 ```
                                ┌──────────────────────┐
                                │                      │
-┌─────────────────────────┐    │                      │     ┌────────────────────────┐
-│                         │    │                      │     │                        │
-│     UpdateFirmware      ├────►------bridge to-------├─────► VerifyCmd && UpdateCmd │
-│ GetFirmwareUpdateStatus │    │                      │     │                        │
-│                         │    │                      │     └────────────────────────┘
+┌─────────────────────────┐    │                      │     ┌──────────────────────────┐
+│                         │    │                      │     │                          │
+│     UpdateFirmware      ├────►------bridge to-------├─────► VerifyCmd && FwUpdateCmd │
+│ GetFirmwareUpdateStatus │    │                      │     │                          │
+│                         │    │                      │     └──────────────────────────┘
 └─────────────────────────┘    │ Shell-based Firmware │
                                │    Update Daemon     │
 ┌─────────────────────────┐    │                      │     ┌────────────────────────┐
@@ -70,10 +70,10 @@ line utilities for firmware updates using a new daemon:
 ```
 
 The UpdateFirmware method returns immediately (to avoid long-blocking D-Bus
-method calls) and launches a background task to run VerifyCmd && UpdateCmd.
-VerifyCmd will check the integrity of the firmware payload and UpdateCmd will
+method calls) and launches a background task to run VerifyCmd && FwUpdateCmd.
+VerifyCmd will check the integrity of the firmware payload and FwUpdateCmd will
 actually perform the update. GetFirmwareUpdateStatus can be polled in the
-meantime and will return Done only after both VerifyCmd and UpdateCmd have
+meantime and will return Done only after both VerifyCmd and FwUpdateCmd have
 finished successfully.
 
 ```mermaid
@@ -100,9 +100,9 @@ note over FWD: token.getStatus() == Done
 FWD -->>+ APP: returns FirmwareUpdateStatus.InProgress
 
 note right of FWD: note: non-blocking call
-FWD ->> WOK: token = new thread(UpdateCmd, fw_file)
+FWD ->> WOK: token = new thread(FwUpdateCmd, fw_file)
 note over WOK: thread spawned
-WOK ->>+ DEV: UpdateCmd(fw_file)
+WOK ->>+ DEV: FwUpdateCmd(fw_file)
 APP ->>- FWD: GetFirmwareUpdateStatus
 note over FWD: token.getStatus() == Not Done
 FWD -->>+ APP: returns FirmwareUpdateStatus.InProgress
@@ -186,7 +186,7 @@ primary ImageType and two expecting the secondary ImageType:
       "Name": "primary_sequencer",
       "Type": "MyDevice",
       "ImageType": "primary",
-      "UpdateCmd": "cat {{fw_file}} > /tmp/fw0",
+      "FwUpdateCmd": "cat {{fw_file}} > /tmp/fw0",
       "VerifyCmd": "gpg –verify {{sig_file}} {{fw_file}}"
       "VersionCmd": "cat /tmp/fw0",
       "VersionPollRate": 10.0
@@ -195,7 +195,7 @@ primary ImageType and two expecting the secondary ImageType:
       "Name": "secondary_sequencer0",
       "Type": "MyDevice",
       "ImageType": "secondary",
-      "UpdateCmd": "cat {{fw_file}} > /tmp/fw1",
+      "FwUpdateCmd": "cat {{fw_file}} > /tmp/fw1",
       "VerifyCmd": "gpg –verify {{sig_file}} {{fw_file}}"
       "VersionCmd": "cat /tmp/fw1",
       "VersionPollRate": 10.0
@@ -204,7 +204,7 @@ primary ImageType and two expecting the secondary ImageType:
       "Name": "secondary_sequencer1",
       "Type": "MyDevice"
       "ImageType": "secondary",
-      "UpdateCmd": "cat {{fw_file}} > /tmp/fw2",
+      "FwUpdateCmd": "cat {{fw_file}} > /tmp/fw2",
       "VerifyCmd": "gpg –verify {{sig_file}} {{fw_file}}"
       "VersionCmd": "cat /tmp/fw2",
       "VersionPollRate": 10.0
