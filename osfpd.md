@@ -14,7 +14,7 @@ OOB ->>+ MOD: i2c read
 MOD -->>- OOB: Return bytes
 OOB -->>- OSD: Return OSFP module info
 note over OSD: Add Asset interface<br/>for each module
-note over OSD: Add D-Bus matcher to<br/>listen to entity mananger<br/>and gpiosensor
+note over OSD: Add D-Bus matchers to<br/>listen to entity mananger<br/>and gpiosensor
 APP ->> OSD: curl, http, etc
 note over APP, OSD: Redfish query for<br/>Chassis/ghost*/Assembly
 OSD -->> APP: return OSFP module info<br/>via Asset inferface
